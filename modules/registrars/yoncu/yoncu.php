@@ -7,7 +7,7 @@ if(!function_exists('json_decode')){
 if(isset($_REQUEST['cron'])){
 	require("../../../init.php");
 	require("../../../includes/functions.php");
-    require("../../../includes/registrarfunctions.php");
+	require("../../../includes/registrarfunctions.php");
 }
 $params = getRegistrarConfigOptions('yoncu');
 if(!is_dir($_SERVER["DOCUMENT_ROOT"].'/tmp/')){
@@ -134,21 +134,21 @@ function yoncu_getconfigarray(){
 			'Type'			=> 'text',
 			'Size'			=> '15',
 			'Description'	=> '<br/>Bu Bilgiye "Üye İşlemleri / Menü Devamı / Güvenlik ayarları / API Erişim" Menüsünden Ulaşabilirsiniz',
-        	'Default'		=> "",
+			'Default'		=> "",
 		),
 		'ApiUserKey'	=> array(
 			'FriendlyName'	=> "API Key",
 			'Type'			=> 'text',
 			'Size'			=> '55',
 			'Description'	=> '<br/>Bu Bilgiye "Üye İşlemleri / Menü Devamı / Güvenlik ayarları / API Erişim" Menüsünden Ulaşabilirsiniz',
-        	'Default'		=> "",
+			'Default'		=> "",
 		),
 		'PromosyonKodu'	=> array(
 			'FriendlyName'	=> "İndirim Kodu",
 			'Type'			=> 'text',
 			'Size'			=> '36',
 			'Description'	=> 'Size özel bir indirim kodu verdi ise belirtiniz',
-        	'Default'		=> "",
+			'Default'		=> "",
 		),
 		'TestMode'	=> array(
 			'FriendlyName'	=> "Test Modu",
@@ -159,44 +159,44 @@ function yoncu_getconfigarray(){
 			'FriendlyName'	=> "Kar Yüzdesi",
 			'Type'			=> 'text',
 			'Size'			=> '15',
-        	'Default'		=> "1",
+			'Default'		=> "1",
 			'Description'	=> 'Ücrete Eklenecek Yüzde Oranında Kar Payı',
 		),
 		'UcretEkFiyat'	=> array(
 			'FriendlyName'	=> "Kar Ücreti",
 			'Type'			=> 'text',
 			'Size'			=> '15',
-        	'Default'		=> "3",
+			'Default'		=> "3",
 			'Description'	=> 'Ücrete Eklenecek Kar Fiyatı',
 		),
 		'TldListAutoUp'	=> array(
 			'FriendlyName'	=> "Otomatik Güncelleme",
 			'Type'			=> 'text',
 			'Size'			=> '15',
-        	'Default'		=> "86400",
+			'Default'		=> "86400",
 			'Description'	=> 'Saniye - Default: 86400 (86400:1 Gün,x=İptal)<br/><a target="_blank" href="../modules/registrars/yoncu/yoncu.php?cron=UpTLD">Buraya</a> tıklayarak uzantı listesini ve fiatları hemen güncelleyebilirsiniz.<br/>Cron Önerisi:<br/><input disabled style="width: 100%;" value=\'0 7 * * * "curl -s '.$Urlx.'/modules/registrars/yoncu/yoncu.php?cron=UpTLD"\'/>',
 		),
 		'AutoUpDisable'	=> array(
 			'FriendlyName'	=> "Güncellenmeyecek Uzantılar",
 			'Type'			=> 'text',
 			'Size'			=> '55',
-        	'Default'		=> "",
+			'Default'		=> "",
 			'Description'	=> '<br>Fiyat ve özelliklerin otomatik güncellenmesini istemediğiniz uzantılar var ise buraya virgül ile ayırarak yazabilirsiniz.<br>Örnek: biz,org,com.tr,de,tk',
 		),
 	);
 	return $UyeBilgileri;
 }
 function yoncu_getcurlpage($Islem,$params,$PostVeri=array(),$Deneme=0){
-	if($params['ApiUserID'] == "" or $params['ApiUserKey'] == "" or !is_numeric($params['ApiUserID']) or !($params['ApiUserID'] > 0)){
+	if(empty($params['ApiUserID']) or empty($params['ApiUserKey']) or !is_numeric($params['ApiUserID']) or !($params['ApiUserID'] > 0)){
 		return array(false,'API Login Bilgileri Hatalı');
 	}
 	$PostVeri['ka']	= $params['ApiUserID'];
 	$PostVeri['sf']	= $params['ApiUserKey'];
 	$PostVeri['id']	= $params['ApiUserID'];
-	$PostVeri['key']	= $params['ApiUserKey'];
+	$PostVeri['key']= $params['ApiUserKey'];
 	$Post	= array();
 	foreach($PostVeri as $Adi => $Veri){
-		$Post[]	= $Adi.'='.urlencode($Veri);
+		$Post[]	= $Adi.'='.(empty($Veri)?'':urlencode($Veri));
 	}
 	$URL	= 'http://www.yoncu.com/apiler/domain/'.$Islem.'.php';
 	$ch = curl_init ();
@@ -241,7 +241,7 @@ function yoncu_getnameservers($params){
 		if(isset($YoncuBilgi[1][0]->dns->ns4)) $values['ns4'] = $YoncuBilgi[1][0]->dns->ns4;
 		if(isset($YoncuBilgi[1][0]->dns->ns5)) $values['ns5'] = $YoncuBilgi[1][0]->dns->ns5;
 		if(isset($YoncuBilgi[1][0]->dns->ns6)) $values['ns6'] = $YoncuBilgi[1][0]->dns->ns6;
-    }else{
+	}else{
 		$values['error'] = $YoncuBilgi[1];
 	}
 	return $values;
